@@ -36,11 +36,12 @@ node seed.js
 ```
 PORT=5001
 MONGO_URI=<mongo_uri>
-JWT_SECRET=<secret>
-JWT_REFRESH_SECRET=<secret>
+ACCES_JWT_SECRET=<secret>
+REFRESH_JWT_SECRET=<secret>
+COOKIE_SECRET=<secret>
 NODE_ENV=production
 ```
-Notes : secrets non versionnés ; MONGO_URI pointe vers Atlas (déjà en ligne).
+Notes : secrets non versionnés ; MONGO_URI pointe vers Atlas (déjà en ligne). Les noms de variables doivent correspondre au code (ACCES_JWT_SECRET, REFRESH_JWT_SECRET, COOKIE_SECRET).
 
 ## Endpoints principaux
 - POST /auth/register
