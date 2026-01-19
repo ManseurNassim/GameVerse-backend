@@ -34,6 +34,13 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: true
 });
 
+const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: 'Trop de tentatives d\'inscription, réessayez dans 15 minutes',
+  skipSuccessfulRequests: true
+});
+
 const resendLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 3,
@@ -78,7 +85,7 @@ const connectDB = async () => {
  * Routes configuration
  */
 app.use('/auth/login_process', authLimiter);
-app.use('/auth/register', authLimiter);
+app.use('/auth/register', registerLimiter);
 app.use('/auth/resend-verification', resendLimiter);
 app.use('/auth', authRoutes);
 app.use('/user', generalLimiter, userRoutes);
