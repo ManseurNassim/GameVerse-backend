@@ -95,21 +95,20 @@ exports.register = async (req, res, next) => {
             verificationTokenExpires: tokenExpiry
         });
 
-        try {
-            await sendVerificationEmail(user_email, user_username, verificationToken);
-            res.status(201).json({ 
-                message: "User created. Please check your email to verify your account.",
-                emailSent: true
+        // Send email in background (non-blocking)
+        sendVerificationEmail(user_email, user_username, verificationToken)
+            .then(() => {
+                console.log(`Verification email sent successfully to ${user_email}`);
+            })
+            .catch((emailError) => {
+                console.error(`Email sending failed for ${user_email}:`, emailError.message);
             });
-        } catch (emailError) {
-            console.error("Email sending failed:", emailError.message);
-            console.error("Check your EMAIL_USER and EMAIL_PASS in .env file");
-            res.status(201).json({ 
-                message: "User created but email could not be sent. Please contact support or configure email settings.",
-                emailSent: false,
-                error: process.env.NODE_ENV === 'production' ? undefined : emailError.message
-            });
-        }
+
+        // Respond immediately
+        res.status(201).json({ 
+            message: "Compte créé ! Un email de vérification a été envoyé (vérifiez vos spams). Si vous ne le recevez pas, contactez le support.",
+            emailSent: true
+        });
 
     } catch (error) {
         next(error);
