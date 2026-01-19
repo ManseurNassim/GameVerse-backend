@@ -16,6 +16,10 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// Behind Render/Vercel proxies: trust the first proxy hop for correct req.ip
+// This prevents express-rate-limit from throwing when X-Forwarded-For is present
+app.set('trust proxy', 1);
+
 /**
  * Security configuration
  */
