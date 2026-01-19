@@ -8,7 +8,7 @@ const {
 
 // Obtenir tous les jeux avec filtres et recherche
 exports.getGames = asyncHandler(async (req, res) => {
-    const { q, genres, platforms, themes, developers, publishers, category, genresMode, platformsMode, themesMode, developersMode, publishersMode } = req.query;
+    const { q, genres, platforms, themes, developers, publishers, category, genresMode, platformsMode, themesMode, developersMode, publishersMode, sortBy, sortOrder } = req.query;
     let query = {};
 
     // 1. Recherche Textuelle
@@ -33,18 +33,27 @@ exports.getGames = asyncHandler(async (req, res) => {
         return res.status(200).json(games);
     }
 
+    // Tri personnalisé (added, rating, release_date, etc.)
+    let sortObject = {};
+    if (sortBy) {
+        const direction = sortOrder === 'asc' ? 1 : -1;
+        sortObject[sortBy] = direction;
+    } else {
+        sortObject = { added: -1 }; // Défaut: tri par added descendant
+    }
+
     // Pagination: si page/limit fournis, renvoyer data + total
     const { page, limit, skip } = parsePagination(req.query);
     if (req.query.page || req.query.limit) {
         const [total, games] = await Promise.all([
             Game.countDocuments(query),
-            Game.find(query).skip(skip).limit(limit)
+            Game.find(query).sort(sortObject).skip(skip).limit(limit)
         ]);
         return res.status(200).json({ data: games, total, page, limit });
     }
 
     // Comportement legacy: renvoyer un tableau simple limité à 50
-    const games = await Game.find(query).limit(50);
+    const games = await Game.find(query).sort(sortObject).limit(50);
     res.status(200).json(games);
 });
 

@@ -85,3 +85,8 @@ Notes :
 curl "http://localhost:5001/games?q=mario&genres=Aventure"
 curl "http://localhost:5001/auth/login" -d '{"email":"...","password":"..."}' -H "Content-Type: application/json"
 ```
+## Améliorations récentes (Jan 2026)
+- **Filtrage amélioré** : Support pour thèmes avec descriptions (ex: "4X (explorer, étendre...)")
+- **Tri personnalisé** : Nouveaux params `sortBy` et `sortOrder` pour trier par `added`, `rating`, `release_date`
+- **Optimisation des requêtes** : `buildArrayQuery` corrigée pour traiter les valeurs avec virgules internes
+- **RankingPage performante** : Chargement rapide des filtres via `/games/filters`, puis jeux à la demande avec pagination

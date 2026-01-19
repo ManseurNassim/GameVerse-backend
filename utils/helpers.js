@@ -28,10 +28,13 @@ const sendError = (res, message, statusCode = 400, errors = null) => {
 
 /**
  * Build MongoDB query with AND/OR logic for array fields
+ * Important: Some values (like themes) contain commas internally, so we should NOT split
+ * unless we have multiple comma-separated values
  */
 const buildArrayQuery = (field, values, mode = 'OR') => {
     if (!values) return {};
-    const valueList = Array.isArray(values) ? values : values.split(',');
+    // If already an array, use it; otherwise treat as single value (don't split)
+    const valueList = Array.isArray(values) ? values : [values];
     return mode === 'AND' ? { $all: valueList } : { $in: valueList };
 };
 
