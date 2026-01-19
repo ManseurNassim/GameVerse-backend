@@ -56,14 +56,19 @@ const allowedOrigins = [
   'http://localhost:3001',
   'http://localhost:5173',
   'https://game-verse-frontend.vercel.app',
-  'https://gameverse.nassimmanseur.fr'
+  'https://gameverse.nassimmanseur.fr',
+  'https://www.gameverse.nassimmanseur.fr'
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
+    // Log l'origine pour debug
+    console.log('[CORS] Request from origin:', origin);
+    
     if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
+    console.log('[CORS] Blocked origin:', origin);
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
