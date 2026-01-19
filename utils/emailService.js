@@ -1,33 +1,18 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
 /**
- * Configuration du transporteur email
+ * Configuration Resend
  */
-const createTransporter = () => {
-  const port = Number(process.env.EMAIL_PORT);
-  return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: port,
-    secure: port === 465,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    },
-    connectionTimeout: 10000, // 10 seconds
-    greetingTimeout: 10000,
-    socketTimeout: 10000
-  });
-};
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
  * Envoi d'email de vérification
  */
 exports.sendVerificationEmail = async (email, username, token) => {
-  const transporter = createTransporter();
   const verificationUrl = `${process.env.FRONTEND_URL}/#/verify-email/${token}`;
 
   const mailOptions = {
-    from: `"GameVerse" <${process.env.EMAIL_USER}>`,
+    from: 'GameVerse <onboarding@resend.dev>',
     to: email,
     subject: 'Vérifiez votre compte GameVerse',
     html: `
@@ -76,17 +61,15 @@ exports.sendVerificationEmail = async (email, username, token) => {
     `
   };
 
-  await transporter.sendMail(mailOptions);
+  await resend.emails.send(mailOptions);
 };
 
 /**
  * Envoi d'email de confirmation après vérification
  */
 exports.sendWelcomeEmail = async (email, username) => {
-  const transporter = createTransporter();
-
   const mailOptions = {
-    from: `"GameVerse" <${process.env.EMAIL_USER}>`,
+    from: 'GameVerse <onboarding@resend.dev>',
     to: email,
     subject: 'Bienvenue sur GameVerse !',
     html: `
@@ -135,5 +118,5 @@ exports.sendWelcomeEmail = async (email, username) => {
     `
   };
 
-  await transporter.sendMail(mailOptions);
+  await resend.emails.send(mailOptions);
 };
