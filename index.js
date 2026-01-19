@@ -44,7 +44,8 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:5173',
-  'https://game-verse-frontend.vercel.app'
+  'https://game-verse-frontend.vercel.app',
+  'https://gameverse.nassimmanseur.fr'
 ];
 
 const corsOptions = {
