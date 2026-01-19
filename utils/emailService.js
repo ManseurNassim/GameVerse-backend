@@ -12,7 +12,7 @@ exports.sendVerificationEmail = async (email, username, token) => {
   const verificationUrl = `${process.env.FRONTEND_URL}/#/verify-email/${token}`;
 
   const mailOptions = {
-    from: 'GameVerse <noreplý@gameverse.nassimmanseur.fr>',
+    from: 'GameVerse <contact@noreply.gameverse.nassimmanseur.fr>',
     to: email,
     subject: 'Vérifiez votre compte GameVerse',
     html: `
@@ -69,7 +69,7 @@ exports.sendVerificationEmail = async (email, username, token) => {
  */
 exports.sendWelcomeEmail = async (email, username) => {
   const mailOptions = {
-    from: 'GameVerse <noreplý@gameverse.nassimmanseur.fr>',
+    from: 'GameVerse <contact@noreply.gameverse.nassimmanseur.fr>',
     to: email,
     subject: 'Bienvenue sur GameVerse !',
     html: `
