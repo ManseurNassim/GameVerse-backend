@@ -39,9 +39,15 @@ MONGO_URI=<mongo_uri>
 ACCES_JWT_SECRET=<secret>
 REFRESH_JWT_SECRET=<secret>
 COOKIE_SECRET=<secret>
+RESEND_API_KEY=<resend_api_key>
+FRONTEND_URL=https://gameverse.nassimmanseur.fr
 NODE_ENV=production
 ```
-Notes : secrets non versionnés ; MONGO_URI pointe vers Atlas (déjà en ligne). Les noms de variables doivent correspondre au code (ACCES_JWT_SECRET, REFRESH_JWT_SECRET, COOKIE_SECRET).
+Notes : 
+- Secrets non versionnés ; MONGO_URI pointe vers Atlas.
+- Email : utilise Resend API (gratuit jusqu'à 3000 emails/mois), plus fiable que SMTP sur les plateformes cloud.
+- FRONTEND_URL : domaine de production du front pour les liens dans les emails de vérification.
+- Les noms de variables doivent correspondre au code (ACCES_JWT_SECRET, REFRESH_JWT_SECRET, COOKIE_SECRET).
 
 ## Endpoints principaux
 - POST /auth/register
@@ -57,13 +63,22 @@ Notes : secrets non versionnés ; MONGO_URI pointe vers Atlas (déjà en ligne).
 - Hashing bcrypt des mots de passe
 - JWT (access + refresh cookies httpOnly)
 - Validation des entrées (helpers côté serveur)
-- CORS : autoriser le domaine du front déployé
+- CORS : domaines autorisés (localhost + domaine de prod front)
+- Rate limiting : protection contre le spam (login, register, resend-verification)
+- Trust proxy : activé pour détecter correctement l'IP client derrière les proxies cloud (Render, Vercel)
 
 ## Déploiement (Render)
 - Service Web root : `backend/`
 - Build : `npm install`
 - Start : `node index.js`
-- Variables d'env : PORT (fourni par Render), MONGO_URI, JWT_SECRET, JWT_REFRESH_SECRET, NODE_ENV=production
+- Variables d'env : 
+  - PORT (fourni par Render)
+  - MONGO_URI (Atlas)
+  - ACCES_JWT_SECRET, REFRESH_JWT_SECRET, COOKIE_SECRET
+  - RESEND_API_KEY (pour les emails)
+  - FRONTEND_URL (domaine de prod du front)
+  - NODE_ENV=production
+- Trust proxy activé (`app.set('trust proxy', 1)`) pour rate limiting correct derrière le proxy Render
 
 ## Tests rapides
 ```bash
