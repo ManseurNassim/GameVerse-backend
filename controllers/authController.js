@@ -48,11 +48,12 @@ exports.login = async (req, res, next) => {
         const { accessToken, refreshToken } = generateTokens(user);
 
         // Send Refresh Token as HttpOnly Cookie
+        const isProd = process.env.NODE_ENV === 'production';
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Lax',
-            maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
+            secure: isProd,                     // secure only in prod (https)
+            sameSite: isProd ? 'None' : 'Lax',  // None for cross-site (frontend on Vercel, backend on Render)
+            maxAge: 5 * 24 * 60 * 60 * 1000,    // 5 days
             signed: true
         });
 
@@ -118,10 +119,11 @@ exports.register = async (req, res, next) => {
 exports.logout = async (req, res, next) => {
     try {
         // Clear cookie
+        const isProd = process.env.NODE_ENV === 'production';
         res.clearCookie('refreshToken', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Lax',
+            secure: isProd,
+            sameSite: isProd ? 'None' : 'Lax',
             signed: true
         });
         
