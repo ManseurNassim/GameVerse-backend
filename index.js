@@ -96,6 +96,11 @@ const connectDB = async () => {
 /**
  * Routes configuration
  */
+// Health check endpoint for uptime monitoring (accepts both GET and HEAD)
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.use('/auth/login_process', authLimiter);
 app.use('/auth/register', registerLimiter);
 app.use('/auth/resend-verification', resendLimiter);
